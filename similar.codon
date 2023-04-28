@@ -1,0 +1,91 @@
+# import orjson
+import os
+
+# from python import orjson
+# from numpy import dot
+# from numpy.linalg import norm
+# from python import numpy.dot as dot
+# from python import numpy.linalg.norm as norm
+# from numpy.linalg import norm
+from typing import Generator, List, Tuple
+
+# from embedding import OpenAIEmbedding, EmbeddingContainer
+from python import embedding
+# from python import embedding.OpenAIEmbedding
+# from python import embedding.EmbeddingContainer
+# from max_heap import MaxHeap
+# from timer import Timer
+# from python import timer.Timer
+from python import timer
+from python import max_heap as mh
+
+
+# def load_embeddings() -> Generator[OpenAIEmbedding, None, None]:
+# def load_embeddings() -> Generator[OpenAIEmbedding]:
+@python
+def load_embeddings():
+    import os
+    import orjson
+    json_files = [
+        os.path.join("out", f) for f in os.listdir("out") if f.endswith(".json")
+    ]
+    for file in json_files:
+        with open(file, "rb") as f:
+            embedding = orjson.loads(f.read())
+            yield embedding
+
+
+# def get_cosine_similarity(a: OpenAIEmbedding, b: OpenAIEmbedding) -> float:
+@python
+def get_cosine_similarity(a, b) -> float:
+    from numpy import dot
+    from numpy.linalg import norm
+
+    a, b = a["data"][0]["embedding"], b["data"][0]["embedding"]
+    return dot(a, b) / (norm(a) * norm(b))
+
+
+def get_similar_embeddings(
+    # query_embedding: OpenAIEmbedding,
+    # query_embedding: embedding.OpenAIEmbedding,
+    query_embedding,
+    # db_embeddings: Generator[OpenAIEmbedding, None, None],
+    # db_embeddings: Generator[OpenAIEmbedding],
+    # db_embeddings: Generator[embedding.OpenAIEmbedding],
+    db_embeddings,
+    num_results: int,
+# ) -> List[Tuple[OpenAIEmbedding, float]]:
+# ) -> List[Tuple[embedding.OpenAIEmbedding, float]]:
+):
+    similar_embeddings = mh.MaxHeap(num_results)
+    for embedding in db_embeddings:
+        similar_embeddings.push(
+            (embedding, get_cosine_similarity(query_embedding, embedding))
+        )
+    return similar_embeddings.items()
+
+
+def main():
+    with timer.Timer():
+        # query_embedding: OpenAIEmbedding = EmbeddingContainer(
+        # query_embedding: embedding.OpenAIEmbedding = embedding.EmbeddingContainer(
+        query_embedding = embedding.EmbeddingContainer(
+            num_dimensions=1536, max_tokens=8191
+        ).to_dict()
+        db_embeddings = load_embeddings()
+    
+    print(len(query_embedding["data"][0]["embedding"]))
+    print(type(db_embeddings))
+
+    # for i, x in enumerate(db_embeddings):
+    #     if i % 5000 == 0:
+    #         print(i)
+
+    with timer.Timer():
+        similar_embeddings = get_similar_embeddings(query_embedding, db_embeddings, 10)
+        for score, _ in similar_embeddings:
+            print(score)
+
+
+if __name__ == "__main__":
+    main()

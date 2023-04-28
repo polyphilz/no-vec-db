@@ -1,0 +1,6 @@
+__pycache__
+**/.DS_Store
+env
+out
+out_chunked
+query_embedding.json
