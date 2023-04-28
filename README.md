@@ -34,6 +34,10 @@ Questions to verify:
 - pgvector on any Postgres provider
 - Vespa
 - Vald
+- Solr
+- LangChain in-memory vec stores
+
+- Use this for a good list of the ones LangChain has implemented: https://github.com/hwchase17/langchain/tree/master/langchain/vectorstores
 
 These are not meant to replace trad DBs; simply for vector-first indexing.
 
@@ -42,6 +46,10 @@ Benchmarks:
 - https://farfetchtechblog.com/en/blog/post/powering-ai-with-vector-databases-a-benchmark-part-i/
 - https://www.farfetchtechblog.com/en/blog/post/powering-ai-with-vector-databases-a-benchmark-part-ii/
 - https://gradientflow.com/the-vector-database-index/
+
+Things to read on vec dbs:
+
+- https://frankzliu.com/blog/a-gentle-introduction-to-vector-databases
 
 ## Other proj
 
